@@ -1,0 +1,25 @@
+local Enable=Menu.Switch("Desync Exploit","Desync Exploit",false)
+local Roll=Menu.SliderInt("Desync Exploit","Roll", 0,  -180, 180)
+local PitchRoll=Menu.SliderInt("Desync Exploit","Pitch Roll", 0, -180, 180)
+local NLPitch =  Menu.FindVar("Aimbot", "Anti Aim", "Main", "Pitch")
+Menu.Button("Desync Exploit", "Random", "Random Generated Values",function()
+	Roll:Set(math.random(-180, 180))
+	PitchRoll:Set(Utils.RandomInt(-180, 180))
+end)
+
+Cheat.RegisterCallback("prediction",function(cmd)
+	--Check if the player is in the air
+	local Player = EntityList.GetLocalPlayer()
+	if Player == nil then return true end
+	if Player:GetProp("m_fFlags") == 256 then
+		NLPitch:Set(1)
+		return true
+	end
+	if Enable:Get() then
+		NLPitch:Set(0)
+		cmd.viewangles.roll = Roll:Get()+PitchRoll:Get()
+		cmd.viewangles.pitch = PitchRoll:Get()
+	else
+		NLPitch:Set(1)
+	end
+end)
